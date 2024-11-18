@@ -1,28 +1,27 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { SummaryRequest, SummaryResponse } from "../../types";
+
+// Retrieve the API key from environment variables
 const rapidApiKey = import.meta.env.VITE_RAPID_API_ARTICLE_KEY;
 
-// const initialState: { url: string } = {};
-
 export const articleApi = createApi({
-  reducerPath: "articleAPI",
+  reducerPath: "articleAPI",  // name of the slice
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://article-extractor-and-summarizer.p.rapidapi.com/",
+    baseUrl: "https://article-extractor-and-summarizer.p.rapidapi.com/",  // Base URL for the API
     prepareHeaders: (headers) => {
-      headers.set("x-rapidapi-key", rapidApiKey);
-      headers.set(
-        "x-rapidapi-host",
-        "article-extractor-and-summarizer.p.rapidapi.com"
-      );
+      headers.set("x-rapidapi-key", rapidApiKey);  // API key for authentication
+      headers.set("x-rapidapi-host", "article-extractor-and-summarizer.p.rapidapi.com");
       return headers;
     },
   }),
   endpoints: (builder) => ({
+    // Define the query for fetching article summary
     getSummary: builder.query<SummaryResponse, SummaryRequest>({
-      query: (params) =>
-        `/summarize?url=${encodeURIComponent(params.articleUrl)}&length=3`,
+      query: (params) => {
+        return `/summarize?url=${encodeURIComponent(params.articleUrl)}&length=3`; // Construct query string with params
+      },
     }),
   }),
 });
 
-export const { useLazyGetSummaryQuery } = articleApi;
+export const { useLazyGetSummaryQuery } = articleApi as unknown as any;
